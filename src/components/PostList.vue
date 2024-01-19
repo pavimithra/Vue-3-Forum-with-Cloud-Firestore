@@ -1,8 +1,8 @@
 <template>
   <div class="post-list">
     <div class="post"
-          v-for="post in posts"
-          :key="post.id"
+         v-for="post in posts"
+         :key="post.id"
     >
 
       <div class="user-info">
@@ -25,7 +25,7 @@
       </div>
 
       <div class="post-date text-faded">
-        {{post.publishedAt}}
+        <AppDate :timestamp="post.publishedAt" />
       </div>
 
     </div>
@@ -35,12 +35,17 @@
 
 <script>
 import sourceData from '@/data.json'
+import AppDate from '@/components/AppDate'
+
 export default {
   props: {
     posts: {
       required: true,
       type: Array
     }
+  },
+  components: {
+    AppDate
   },
   data () {
     return {
