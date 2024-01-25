@@ -19,7 +19,7 @@
       <ThreadList :threads="threads"/>
     </div>
   </div>
-</template>
+  </template>
   
 <script>
 import ThreadList from '@/components/ThreadList'
