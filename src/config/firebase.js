@@ -2,12 +2,12 @@ import { initializeApp } from "firebase/app"
 import { getFirestore } from "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAIhliMuMhZP9CsDzP695BaZIR47rifHkg",
-  authDomain: "vue-3-forum-51f29.firebaseapp.com",
-  projectId: "vue-3-forum-51f29",
-  storageBucket: "vue-3-forum-51f29.appspot.com",
-  messagingSenderId: "822761477822",
-  appId: "1:822761477822:web:c54ab4604eb41614f4f0ef"
+  apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
+  authDomain: process.env.VUE_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.VUE_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.VUE_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.VUE_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.VUE_APP_FIREBASE_APP_ID
 }
 
 // Initialize Firebase
