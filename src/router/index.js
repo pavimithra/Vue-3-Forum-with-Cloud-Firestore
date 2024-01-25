@@ -9,6 +9,7 @@ import ThreadEdit from '@/pages/ThreadEdit'
 import { createRouter, createWebHistory } from 'vue-router'
 //import sourceData from '@/data.json'
 //import { findById } from '@/helpers'
+import store from '@/store'
 
 const routes = [
   {
@@ -82,7 +83,7 @@ const routes = [
   }
 ]
 
-export default createRouter({
+const router = createRouter({
   history: createWebHistory(),
   routes,
   scrollBehavior (to) {
@@ -92,3 +93,9 @@ export default createRouter({
     return scroll
   }
 })
+
+router.beforeEach(() => {
+  store.dispatch('unsubscribeAllSnapshots')
+})
+
+export default router

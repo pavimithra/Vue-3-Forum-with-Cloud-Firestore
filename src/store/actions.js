@@ -138,14 +138,19 @@ export default {
   fetchItem ({ state, commit }, { id, emoji, resource }) {
     console.log('🔥', emoji, id)
     return new Promise((resolve) => {
-      onSnapshot(doc(db, resource, id), (doc) => {
+      const unsubscribe = onSnapshot(doc(db, resource, id), (doc) => {
         const item = { ...doc.data(), id: doc.id }
         commit('setItem', { resource, item })
         resolve(item)
       })
+      commit('appendUnsubscribe', { unsubscribe })
     })
   },
   fetchItems ({ dispatch }, { ids, resource, emoji }) {
     return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource, emoji })))
+  },
+  async unsubscribeAllSnapshots ({ state, commit }) {
+    state.unsubscribes.forEach(unsubscribe => unsubscribe())
+    commit('clearAllUnsubscribes')
   }
 }
