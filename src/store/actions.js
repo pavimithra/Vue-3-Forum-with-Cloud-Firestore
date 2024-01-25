@@ -1,6 +1,6 @@
 import { findById, docToResource } from '@/helpers'
 import db from '@/config/firebase'
-import { doc, onSnapshot, collection, query, arrayUnion, writeBatch, getDoc, increment } from "firebase/firestore";
+import { doc, getDoc, updateDoc, onSnapshot, collection, query, arrayUnion, writeBatch, increment } from "firebase/firestore";
 
 export default {
   async createPost ({ commit, state }, post) {
@@ -29,6 +29,20 @@ export default {
     commit('setItem', { resource: 'posts', item: { ...newPost.data(), id: newPost.id } }) // set the post
     commit('appendPostToThread', { childId: newPost.id, parentId: post.threadId }) // append post to thread
     commit('appendContributorToThread', { childId: state.authId, parentId: post.threadId })
+  },
+  async updatePost ({ commit, state }, { text, id }) {
+    const post = {
+      text,
+      edited: {
+        at: Math.floor(Date.now() / 1000),
+        by: state.authId,
+        moderated: false
+      }
+    }
+    const postRef = doc(db, "posts", id)
+    await updateDoc(postRef, post);
+    const updatedPost = await getDoc(postRef)
+    commit('setItem', { resource: 'posts', item: updatedPost })
   },
   async createThread ({ commit, state, dispatch }, { text, title, forumId }) {
     const userId = state.authId
