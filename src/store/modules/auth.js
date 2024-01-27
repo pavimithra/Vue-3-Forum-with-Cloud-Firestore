@@ -1,5 +1,5 @@
 import db from '@/config/firebase'
-import { doc, getDoc, collection, query, where, getDocs } from "firebase/firestore";
+import { doc, getDoc, collection, query, where, getDocs, orderBy, startAfter, limit } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
 
 export default {
@@ -78,8 +78,18 @@ export default {
       )
       commit('setAuthId', userId)
     },
-    async fetchAuthUsersPosts ({ commit, state }) {
-      const q = query(collection(db, "posts"), where("userId", "==", state.authId))
+    async fetchAuthUsersPosts ({ commit, state }, { startAfterDoc }) {
+      let q = null
+      const common = [collection(db, "posts"), where("userId", "==", state.authId), orderBy("publishedAt", "desc"), limit(10)]
+      if (startAfterDoc) {
+        console.log("startAfterDoc.id - " + startAfterDoc.id)
+        const docReq = doc(db, "posts", startAfterDoc.id)
+        const lastpost = await getDoc(docReq)
+        q = query(...common, startAfter(lastpost))
+      }
+      else {
+        q = query(...common)
+      }
       const posts = await getDocs(q)
       posts.forEach((item) => {
         commit('setItem', { resource: 'posts', item }, { root: true })
