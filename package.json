@@ -17,6 +17,7 @@
     "dayjs": "^1.11.10",
     "firebase": "^10.7.2",
     "firestore-export-import": "^1.4.0",
+    "vee-validate": "^4.12.5",
     "vue": "^3.2.13",
     "vue-router": "^4.2.5",
     "vuex": "^4.0.2"

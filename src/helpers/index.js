@@ -31,3 +31,9 @@ export const makeAppendChildToParentMutation = ({ parent, child }) => {
     }
   }
 }
+
+
+export const arrayRandom = (array) => {
+  const randomIndex = Math.floor(Math.random() * array.length)
+  return array[randomIndex]
+}

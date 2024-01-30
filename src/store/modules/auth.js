@@ -1,6 +1,7 @@
 import db from '@/config/firebase'
 import { doc, getDoc, collection, query, where, getDocs, orderBy, startAfter, limit } from "firebase/firestore";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export default {
   namespaced: true,
@@ -35,7 +36,24 @@ export default {
     async registerUserWithEmailAndPassword ({ dispatch }, { avatar = null, email, name, username, password }) {
       const auth = getAuth()
       const result = await createUserWithEmailAndPassword(auth, email, password)
+      avatar = await dispatch('uploadAvatar', { authId: result.user.uid, file: avatar })
       await dispatch('users/createUser', { id: result.user.uid, email, name, username, avatar }, { root: true })
+    },
+    async uploadAvatar ({ state }, { authId, file, filename }) {
+      if (!file) return null
+      authId = authId || state.authId
+      filename = filename || file.name
+      try {
+        const storage = getStorage()
+        const storageRef = ref(storage, `uploads/${authId}/images/${Date.now()}-${filename}`)
+
+        const imageUpload = await uploadBytes(storageRef, file)
+        const url = await getDownloadURL(imageUpload.ref)
+        return url
+      } catch (error) {
+        alert("Error uploading avatar image")
+      }
+      
     },
     signInWithEmailAndPassword (context, { email, password }) {
       const auth = getAuth()
