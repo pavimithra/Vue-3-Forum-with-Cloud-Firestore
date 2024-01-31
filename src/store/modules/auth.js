@@ -1,6 +1,6 @@
 import db from '@/config/firebase'
-import { doc, getDoc, collection, query, where, getDocs, orderBy, startAfter, limit } from "firebase/firestore";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth";
+import { doc, getDoc, collection, query, where, getDocs, orderBy, startAfter, limit } from "firebase/firestore"
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "firebase/auth"
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage"
 
 export default {
