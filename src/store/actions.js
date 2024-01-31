@@ -4,7 +4,6 @@ import { doc, onSnapshot } from "firebase/firestore";
 export default {
 
   fetchItem ({ state, commit }, { id, emoji, resource, handleUnsubscribe = null }) {
-    console.log('🔥', emoji, id)
     return new Promise((resolve) => {
       const unsubscribe = onSnapshot(doc(db, resource, id), (doc) => {
         if (doc.exists) {
@@ -23,10 +22,14 @@ export default {
     })
   },
   fetchItems ({ dispatch }, { ids, resource, emoji }) {
+    ids = ids || []
     return Promise.all(ids.map(id => dispatch('fetchItem', { id, resource, emoji })))
   },
   async unsubscribeAllSnapshots ({ state, commit }) {
     state.unsubscribes.forEach(unsubscribe => unsubscribe())
     commit('clearAllUnsubscribes')
+  },
+  clearItems ({ commit }, { modules = [] }) {
+    commit('clearItems', { modules })
   }
 }

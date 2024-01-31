@@ -17,7 +17,6 @@ export default {
       { root: true }
     ),
     fetchAllCategories ({ commit }) {
-      console.log('🔥', '🏷', 'all')
       return new Promise((resolve) => {
         onSnapshot(query(collection(db, "categories")), (querySnapshot) => {
           const categories = querySnapshot.docs.map(doc => {

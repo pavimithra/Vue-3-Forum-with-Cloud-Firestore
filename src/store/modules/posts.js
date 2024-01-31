@@ -11,6 +11,7 @@ export default {
     async createPost ({ commit, state, rootState }, post) {
       post.userId = rootState.auth.authId
       post.publishedAt = Math.floor(Date.now() / 1000)
+      post.firstInThread = post.firstInThread || false
       // Get a new write batch
       const batch = writeBatch(db)
   
@@ -18,10 +19,12 @@ export default {
       batch.set(postRef, post)
   
       const threadRef = doc(db, "threads", post.threadId)
-      batch.update(threadRef, {
-        posts: arrayUnion(postRef.id),
-        contributors: arrayUnion(rootState.auth.authId)
-      })
+
+      const threadUpdates = {
+        posts: arrayUnion(postRef.id)
+      }
+      if (!post.firstInThread) threadUpdates.contributors = arrayUnion(rootState.auth.authId)
+      batch.update(threadRef, threadUpdates)
   
       const userRef = doc(db, "users", rootState.auth.authId)
       batch.update(userRef, {
@@ -33,7 +36,9 @@ export default {
       const newPost = await getDoc(postRef)
       commit('setItem', { resource: 'posts', item: { ...newPost.data(), id: newPost.id } }, { root: true }) // set the post
       commit('threads/appendPostToThread', { childId: newPost.id, parentId: post.threadId }, { root: true }) // append post to thread
-      commit('threads/appendContributorToThread', { childId: rootState.auth.authId, parentId: post.threadId }, { root: true })
+      if (!post.firstInThread) {
+        commit('threads/appendContributorToThread', { childId: rootState.auth.authId, parentId: post.threadId }, { root: true })
+      }
     },
     async updatePost ({ commit, state, rootState }, { text, id }) {
       const post = {

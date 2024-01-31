@@ -21,7 +21,6 @@ export default {
       return new Promise((resolve) => {
         const auth = getAuth()
         const unsubscribe = onAuthStateChanged(auth, async (user) => {
-          console.log('👣 the user has changed')
           dispatch('unsubscribeAuthUserSnapshot')
           if (user) {
             await dispatch('fetchAuthUser')
@@ -100,7 +99,6 @@ export default {
       let q = null
       const common = [collection(db, "posts"), where("userId", "==", state.authId), orderBy("publishedAt", "desc"), limit(10)]
       if (startAfterDoc) {
-        console.log("startAfterDoc.id - " + startAfterDoc.id)
         const docReq = doc(db, "posts", startAfterDoc.id)
         const lastpost = await getDoc(docReq)
         q = query(...common, startAfter(lastpost))
